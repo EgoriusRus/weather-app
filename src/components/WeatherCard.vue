@@ -8,12 +8,12 @@
               <div class="wrapper">
                 <div class="mynav">
                 </div>
-                <h1 class="heading">Погода</h1>
+                <h1 class="heading">Средняя температура</h1>
                 <h3 class="location">Ростов, Сегодня</h3>
-                <span class="desc">{{weatherInfo.list[2].weather[0].description}}</span>
+                <span class="desc">{{weatherInfo.list[0].weather[0].description}}</span>
                 <p class="temp">
                    <img class="main-icon" :src="'http://openweathermap.org/img/wn/'+weatherInfo.list[0].weather[0].icon+'@2x.png'" alt="">
-                  <span class="temp-value">{{weatherInfo.list[0].main.temp  | Celsius}}</span>
+                  <span class="temp-value">{{averageTemperatureNow}}</span>
                   <span class="deg">0</span>
                   <a href="javascript:;"><span class="temp-type">C</span></a>
                 </p>
@@ -26,15 +26,15 @@
                   <li class="active">
                     <span class="date">Завтра</span>
                     <span class="lnr lnr-sun condition">
-                       <img :src="'http://openweathermap.org/img/wn/'+weatherInfo.list[7].weather[0].icon+'@2x.png'" alt="">
-                      <span class="temp">{{weatherInfo.list[7].main.temp | Celsius}}<span class="deg">0</span><span class="temp-type">C</span></span>
+                       <img :src="'http://openweathermap.org/img/wn/'+weatherInfo.list[8].weather[0].icon+'@2x.png'" alt="">
+                      <span class="temp">{{averageTemperatureTomorrow}}<span class="deg">0</span><span class="temp-type">C</span></span>
                     </span>
                   </li>
                   <li class="active">
                     <span class="date">Послезавтра</span>
                     <span class="lnr lnr-cloud condition">
-                      <img :src="'http://openweathermap.org/img/wn/'+weatherInfo.list[14].weather[0].icon+'@2x.png'" alt="">
-                      <span class="temp">{{weatherInfo.list[14].main.temp  | Celsius}}<span class="deg">0</span><span class="temp-type">C</span></span>
+                      <img :src="'http://openweathermap.org/img/wn/'+weatherInfo.list[16].weather[0].icon+'@2x.png'" alt="">
+                      <span class="temp">{{averageTemperatureDayAfter}}<span class="deg">0</span><span class="temp-type">C</span></span>
                     </span>
                   </li>
                 </ul>
@@ -50,21 +50,34 @@
 <script>
 export default {
   name: 'WeatherCard',
-  data(){
-    return {
-     
-    }
-  },
   computed: {
     weatherInfo() {
       return this.$store.getters.weatherInfo;
-    }
-  },
-  filters: {
-    Celsius(Kelvin) {
-      let celsius = Math.round(273-Kelvin)
-      return celsius;
-    }
+    },
+    averageTemperatureNow(){
+      let weatherList = this.$store.getters.weatherInfo.list;
+      let averageTemperature = 0;
+      for (let i = 0; i <= 7 ; i++) {
+        averageTemperature += parseFloat(weatherList[i].main.temp);
+      }
+      return averageTemperature.toFixed(1);
+    },
+    averageTemperatureTomorrow(){
+      let weatherList = this.$store.getters.weatherInfo.list;
+      let averageTemperature = 0;
+      for (let i = 8; i <= 15 ; i++) {
+        averageTemperature += parseFloat(weatherList[i].main.temp);
+      }
+      return averageTemperature.toFixed(1);
+    },
+    averageTemperatureDayAfter(){
+      let weatherList = this.$store.getters.weatherInfo.list;
+      let averageTemperature = 0;
+      for (let i = 16; i <= 23 ; i++) {
+        averageTemperature += parseFloat(weatherList[i].main.temp);
+      }
+      return averageTemperature.toFixed(1);
+    },
   },
   beforeCreate() {
      this.$store.dispatch('getWeatherInfo')
